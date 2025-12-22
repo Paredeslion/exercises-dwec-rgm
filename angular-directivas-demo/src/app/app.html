@@ -1,0 +1,65 @@
+<div style="padding: 20px;">
+  <h1>Laboratorio de Directivas</h1>
+
+  <button (click)="alternarVisibilidad()">Mostrar/Ocultar Frutas</button>
+
+  @if (esVisible) {
+    <div style="margin-top: 10px; border: 1px solid #ccc; padding: 10px;">
+      <h3>Lista de Frutas:</h3>
+      <ul>
+        @for (fruta of frutas; track $index; let i = $index) {
+          <li
+            [ngClass]="{'texto-destacado': i % 2 === 0}"
+            [ngStyle]="{'color': i % 2 !== 0 ? 'blue' : 'black'}">
+            {{ fruta }} (Índice: {{ i }})
+          </li>
+        }
+      </ul>
+    </div>
+  }
+
+  <hr>
+
+  <button (click)="estadoActivo = !estadoActivo">Alternar Estilo</button>
+
+  <p [ngClass]="{'caja-activa': estadoActivo, 'caja-inactiva': !estadoActivo}">
+    Este cuadro cambia de clase CSS dinámicamente.
+  </p>
+  <hr>
+  <h3>Directiva Personalizada (Highlight):</h3>
+  <p [appHighlight]="'orange'">
+    Pasa el ratón por encima de este texto para ver tu directiva personalizada en acción.
+  </p>
+  <p [appHighlight]="'green'">
+    Pasa el ratón por encima de este texto para ver tu directiva personalizada en acción.
+  </p>
+  <p [appHighlight]="'red'">
+    Pasa el ratón por encima de este texto para ver tu directiva personalizada en acción.
+  </p>
+  <div style="margin-top: 20px; padding: 10px; border: 1px dashed #333;">
+    <h3>Evaluación:</h3>
+
+    <button (click)="calificacion = 5">5 Estrellas</button>
+    <button (click)="calificacion = 3">3 Estrellas</button>
+    <button (click)="calificacion = 1">1 Estrella</button>
+    <button (click)="calificacion = 0">Sin nota</button>
+
+    <p>Tu nota es: {{ calificacion }}</p>
+
+    @switch (calificacion) {
+      @case (5) {
+        <p style="color: green; font-weight: bold;">¡Excelente servicio! ⭐⭐⭐⭐⭐</p>
+      }
+      @case (3) {
+        <p style="color: orange;">Ni fu ni fa. ⭐⭐⭐</p>
+      }
+      @case (1) {
+        <p style="color: red;">Terrible. ⭐</p>
+      }
+      @default {
+        <p style="color: gray;">No hay calificación válida.</p>
+      }
+    }
+  </div>
+  <hr>
+</div>

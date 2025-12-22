@@ -1,0 +1,50 @@
+Unit 1 - JavaScript exam
+November 24* 2025
+IES San Vicente
+2° DAW Semipresencial
+Client-Side Web Development
+Download and unzip the presents-client.zip and presents-services.zip files. Install dependencies on both projects and launch services with pm start.
+The client is a Vite + TypeScript project already configured and with the HTML and CSS fully implemented.
+You'll only have to implement the correspondent code to make it work.
+Don't touch the index.html file.
+Services
+This application represents a letter to Santa Claus with the presents you want to ask for Christmas. Presents are stored in the services app, and these are the services you'll have to use:
+• GET http://localhost:3000/presents → Returns all the presents in the letter stored in the database. This is the format returned:
+{
+"presents.": [
+{
+"id": 3,
+"photo": "http://localhost: 3000/img/1763371526584.webp",
+"description": "Una silla"
+},
+{
+"id":8,
+"photo": "http://localhost:3000/img/1763470258109.jpeg",
+"description": "Ordenador muy potente"
+}
+]
+}
+• POST http://localhost:3000/presents → You must send a present to insert in the database (without id) and the server should insert it and return that present to you with the generated id.
+#Request data
+{
+"description": "Robot",
+"photo": "Image in base64"
+}
+# Response data
+{
+"present": {
+"id": 9,
+"photo": http://localhost: 3000/img/1763848566944. jpeg,
+"description": "Robot"
+}
+}
+• DELETE http://localhost:3000/presents/id → Deletes the present given the id included in the url. The server's response is empty (204)
+Client
+This is what you have to implement:
+Necessary interfaces to represent the data and server response
+The PresentsService class with the necessary methods to use the services mentioned above (use the provided Http class for this). → 1 point
+Inside the index.ts file, the first thing to do is load the presents from the server (there should be 2 already) and show them in the HTML. Use the template provided in the HTML file (#gift-item-template) and put them inside the ul.gift-list element. → 2 points
+When the delete-button is clicked on a present, delete this present from the server and after that, remove it from the DOM → 2 points
+Implement the form to add a new present. The selected image should be previewed in the img#preview element (keep in mind that by default this image is hidden). Convert the image into base64 to preview it. When the present is added in the server, get the returned present and add it to the list (don't reload), and reset the form (also hide the preview image again) → 3 points
+A maximum of 5 presents are allowed to be in the letter. When that number is reached, hide the form (add the hidden class). If a present is removed and the form is hidden, show it again. → 2 points
+Any ESLint error or warning, as well as bad code practices, will penalize the grade obtained

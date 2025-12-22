@@ -1,0 +1,27 @@
+<div class="bg-white rounded-lg shadow-md flex flex-col relative overflow-visible">
+  <button
+    (click)="deleteProperty()"
+    class="absolute -right-3 -top-3 rounded-full text-white bg-red-700 p-1 shadow-md hover:bg-red-600 btn-delete"
+  >
+    <svg class="icon" width="24" height="24">
+      <use href="icons/close.svg#close"></use>
+    </svg>
+  </button>
+  <img
+    [src]="property().mainPhoto"
+    alt="property().title"
+    class="w-full aspect-[16/10] object-cover property-image"
+  />
+  <div class="p-6 flex flex-col grow">
+    <h3 class="text-xl font-bold text-gray-800 mb-2 property-title">{{ property().title }}</h3>
+    <p class="text-gray-600 mb-4 property-location grow">
+      {{ property().address }}, {{ property().town }}, {{ property().province }}
+    </p>
+    <p class="text-lg font-semibold text-gray-900 mb-4 property-price">{{ property().price }}€</p>
+    <div class="flex justify-between text-gray-700">
+      <span class="property-sqmeters">{{ property().sqmeters }} sqm</span>
+      <span class="property-rooms">{{ property().numRooms }} beds</span>
+      <span class="property-baths">{{ property().numBaths }} baths</span>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,67 @@
+Steps to use vite, tailwindcss, openlayers, ESLint and others
+
+1. Install vite with npm create vite@latest and follow the instructions
+
+2. In this case the project name is "inmosanvi" and is important to goes to the project folder and use npm install:
+	cd inmosanvi
+	npm install
+
+3. In the src folder we put all the js files
+
+4. Install tailwindcss
+	npm install -D tailwindcss @tailwindcss/vite
+
+5. Install openlayers
+	npm install ol
+
+6. If not exists is important to create the vite.config.js and use the following content:
+	import { defineConfig } from 'vite'
+	import tailwindcss from '@tailwindcss/vite'
+
+	export default defineConfig({
+		plugins: [
+			tailwindcss(),
+		],
+		// Importante para que Vite procese ambos HTML
+		build: {
+			rollupOptions: {
+				input: {
+					main: 'index.html',
+					new_property: 'new_property.html', // Asegúrate del nombre exacto
+				}
+			}
+		}
+	})
+
+7. Now the ESLint configuration:
+	npm init @eslint/config
+
+	The following instructions are for the inmosanvi project:
+	√ What do you want to lint? · javascript
+	√ How would you like to use ESLint? · problems
+	√ What type of modules does your project use? · esm
+	√ Which framework does your project use? · none
+	√ Does your project use TypeScript? · no / yes
+	√ Where does your code run? · browser
+	The config that you've selected requires the following dependencies:
+
+	eslint, @eslint/js, globals
+	√ Would you like to install them now? · No / Yes
+	√ Which package manager do you want to use? · npm
+
+8. Eslint configuration need 3 additional rules after extends: ["js/recommended"], add this:
+	rules: {
+      "camelcase": "error", 
+      "curly": "error",     
+      "eqeqeq": "error",    
+    },
+
+9. Adjusting the scripts in package.json:
+	"scripts": {
+		"test": "eslint .",
+    "start": "npm run test && vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+
+10. Now use npm start if there is errors, fix them, if there are no errors the server initiates.

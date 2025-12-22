@@ -1,0 +1,16 @@
+td {
+  vertical-align: middle;
+
+  img {
+    height: 40px;
+  }
+}
+
+/* :host hace referencia al propio elemento */
+:host(:nth-child(odd)) {
+  background-color: #eee;
+}
+
+div:first-child img {
+  height: 40px;
+}

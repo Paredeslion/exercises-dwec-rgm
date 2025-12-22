@@ -1,0 +1,24 @@
+{
+  "name": "inmosanvi",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+		"test": "eslint .",
+		"lint:fix": "eslint . --fix",
+    "start": "npm run test && vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "@tailwindcss/vite": "^4.1.17",
+    "eslint": "^9.39.1",
+    "globals": "^16.5.0",
+    "tailwindcss": "^4.1.17",
+    "vite": "^7.2.2"
+  },
+  "dependencies": {
+    "ol": "^10.7.0"
+  }
+}

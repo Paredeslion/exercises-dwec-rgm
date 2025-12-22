@@ -1,0 +1,13 @@
+<!-- Añado mouseleave para que la puntuación vuelva a su lugar original
+ si no hago click en la que quiero cambiar -->
+<div class="star-container" (mouseleave)="auxRating.set(rating())">
+  @for (star of [1, 2, 3, 4, 5]; track star) {
+    <i
+      class="fa-star"
+      [class]="{ 'fa-solid': star <= auxRating(), 'fa-regular': star > auxRating() }"
+      (mouseenter)="auxRating.set(star)"
+      (click)="rating.set(star)"
+      aria-hidden="true"
+    ></i>
+  }
+</div>
