@@ -1,8 +1,9 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { PropertyCard } from '../property-card/property-card';
+import { PropertyCard } from '../property-card/property-card'; // Asegúrate que la ruta sea correcta
 import { PropertyForm } from '../property-form/property-form';
 import { FormsModule } from '@angular/forms';
 import { PropertiesService } from '../services/properties';
+import { ProvincesService } from '../services/provinces'; // <--- IMPORTANTE
 
 @Component({
   selector: 'properties-page',
@@ -12,27 +13,37 @@ import { PropertiesService } from '../services/properties';
   styleUrl: './properties-page.css',
 })
 export class PropertiesPage {
-  // We inject the service that connects to the server
   #propertiesService = inject(PropertiesService);
+  #provincesService = inject(ProvincesService); // <--- Inyectamos servicio provincias
 
-  // Signals for filters
+  // We display the provinces resource for HTML.
+  provincesResource = this.#provincesService.provincesResource;
+
   search = signal<string>('');
+  // Signal for province filter
+  province = signal<string>('');
 
-  // DATA: We use the service's ‘linkedSignal’.
-  // Since it is linked, if the server changes, this changes.
   properties = this.#propertiesService.properties;
 
   filteredProperties = computed(() => {
     const searchText = this.search().toLowerCase();
-
+    // We obtain the selected province
+    const provinceFilter = this.province();
     return this.properties().filter((p) => {
-      return (
-        p.title.toLowerCase().includes(searchText) || p.address.toLowerCase().includes(searchText)
-      );
+      // Text filter (title or address)
+      const matchesText =
+        p.title.toLowerCase().includes(searchText) || p.address.toLowerCase().includes(searchText);
+
+      // 2. Province filter
+      // If no province is selected (""), always pass.
+      // If there is a province, we check if the address contains that name (e.g., “Madrid”).
+      const matchesProvince =
+        provinceFilter === '' || p.town?.province?.name === provinceFilter;
+
+      return matchesText && matchesProvince;
     });
   });
 
-  // DELETE: We delegate to the service
   deleteProperty(id: number) {
     this.#propertiesService.deleteProperty(id).subscribe();
   }

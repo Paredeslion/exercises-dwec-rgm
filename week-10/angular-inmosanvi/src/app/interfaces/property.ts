@@ -17,6 +17,13 @@ export interface PropertyInsert {
 // and adds the ID that the server returns
 export interface Property extends Omit<PropertyInsert, 'townId'> {
   id: number;
-  // Optional: If the server returns the complete town object, we would put it here.
-  // For now, we'll leave it as is according to the instructions.
+  // We add the nested structure as it appears in the JSON
+  town: {
+    id: number;
+    name: string;
+    province: {
+      id: number;
+      name: string;
+    }
+  };
 }

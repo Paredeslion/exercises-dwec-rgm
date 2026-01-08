@@ -15,7 +15,7 @@
   <div class="p-6 flex flex-col grow">
     <h3 class="text-xl font-bold text-gray-800 mb-2 property-title">{{ property().title }}</h3>
     <p class="text-gray-600 mb-4 property-location grow">
-      {{ property().address }}
+      {{ property().address }}, {{ property().town.name }}, {{ property().town.province.name }}
     </p>
     <p class="text-lg font-semibold text-gray-900 mb-4 property-price">
       {{ property().price | intlCurrency : 'EUR' : 'es-ES' }}
