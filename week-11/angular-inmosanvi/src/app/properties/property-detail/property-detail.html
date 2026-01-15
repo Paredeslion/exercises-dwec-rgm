@@ -1,0 +1,8 @@
+@if (property()) {
+  <property-card
+    [property]="property()!"
+    (deleted)="deleteProperty()">
+  </property-card>
+} @else {
+  <p class="text-center text-gray-500 mt-10">Loading property...</p>
+}

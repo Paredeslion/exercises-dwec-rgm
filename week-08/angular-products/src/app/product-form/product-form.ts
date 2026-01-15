@@ -2,14 +2,12 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  output,
-  inject,
-  DestroyRef,
+  inject
 } from '@angular/core';
-import { FormsModule, NgForm } from '@angular/forms';
+import { FormsModule,  } from '@angular/forms';
 import { Product } from '../interfaces/product';
 import { ProductsService } from '../services/products-service';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'product-form',
@@ -19,7 +17,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProductForm {
-  add = output<Product>();
 
   newProduct: Product = {
     // Asignamos directamente
@@ -33,7 +30,7 @@ export class ProductForm {
 
   #changeDetector = inject(ChangeDetectorRef);
   #productsService = inject(ProductsService);
-  #destroyRef = inject(DestroyRef);
+  #router = inject(Router);
 
   changeImage(fileInput: HTMLInputElement) {
     // Referencia directa al input
@@ -47,14 +44,9 @@ export class ProductForm {
   }
 
   // Este método cambia (no gestionamos la inserción en el array de productos)
-  addProduct(productForm: NgForm) {
+  addProduct() { // No necesitamos el formulario (NgForm) para resetearlo
     this.#productsService
       .insertProduct(this.newProduct)
-      .pipe(takeUntilDestroyed(this.#destroyRef))
-      .subscribe((product) => {
-        this.add.emit(product); // Emitimos el producto (con id) devuelto por el servidor
-        productForm.resetForm(); // Reseteamos los campos de newProduct
-        this.newProduct.imageUrl = ''; // La imagen también (no está vinculada al formulario)
-      });
+      .subscribe(() => this.#router.navigate(['/products']));
   }
 }

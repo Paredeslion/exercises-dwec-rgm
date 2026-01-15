@@ -1,0 +1,49 @@
+<div class="flex flex-col gap-6">
+  <section class="mb-6 bg-white p-6 rounded-lg shadow-md">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <label for="search" class="block text-gray-700 font-bold mb-2">Search</label>
+        <input
+          type="text"
+          id="search"
+          placeholder="Filter by title or address..."
+          [ngModel]="search()"
+          (ngModelChange)="search.set($event)"
+          class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+
+      <div>
+        <label for="province-filter" class="block text-gray-700 font-bold mb-2"
+          >Filter by Province</label
+        >
+        <select
+          id="province-filter"
+          [ngModel]="province()"
+          (ngModelChange)="province.set($event)"
+          class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+        >
+          <option value="">All Provinces</option>
+          @for (prov of provincesResource.value().provinces; track prov.id) {
+            <option [value]="prov.name">{{ prov.name }}</option>
+          }
+        </select>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="text-2xl font-bold text-gray-800">Properties for Sale</h2>
+
+    <div id="property-listings" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      @for (property of filteredProperties(); track property.id) {
+        <property-card [property]="property" (deleted)="deleteProperty(property.id)">
+        </property-card>
+      } @empty {
+        <p class="text-2xl text-gray-500 col-span-full text-center py-8">
+          No properties found matching your criteria.
+        </p>
+      }
+    </div>
+  </section>
+</div>

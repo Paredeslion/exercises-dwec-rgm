@@ -1,5 +1,3 @@
-<product-form (add)="addProduct($event)"></product-form>
-
 <div class="card">
   <div class="card-header bg-primary text-white">
     {{ title }}
@@ -19,10 +17,13 @@
       <div class="col-form-label col-sm-5">Filtered by: {{ search() }}</div>
     </div>
 
+    @let error = productsResource.error();
+
     @if (productsResource.isLoading()) {
-      <div class="alert alert-info m-3">Cargando productos, por favor espere...</div>
-    } @else if (productsResource.error()) {
-      <div class="alert alert-danger m-3">Ha ocurrido un error al cargar los productos.</div>
+      <p>Cargando productos...</p>
+      <p></p>
+    } @else if (error) {
+      <p>Ocurrió un error {{ error | json }}</p>
     } @else {
       @if (filteredProducts().length) {
         <div class="row headers g-0">

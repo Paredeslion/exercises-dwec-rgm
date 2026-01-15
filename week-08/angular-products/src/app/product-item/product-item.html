@@ -3,7 +3,7 @@
     <img [src]="product().imageUrl" alt="" [title]="product().description | uppercase" />
   }
 </div>
-<div class="col-4 my-auto">{{ product().description }}</div>
+<div class="col-4 my-auto"><a [routerLink]="['/products', product().id]">{{ product().description }}</a></div>
 <div class="col my-auto">{{ product().price | intlCurrency: 'EUR' : 'es-ES' }}</div>
 <div class="col my-auto">{{ product().available | date: 'dd/MM/yyyy' }}</div>
 <div class="col my-auto"><star-rating [(rating)]="product().rating"></star-rating></div>

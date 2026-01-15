@@ -6,17 +6,17 @@ import {
   inject,
   resource,
 } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 import { Product } from '../interfaces/product';
 import { FormsModule } from '@angular/forms';
 import { ProductItem } from '../product-item/product-item';
-import { ProductForm } from '../product-form/product-form';
 import { ProductsService } from '../services/products-service';
 import { firstValueFrom } from 'rxjs';
-
+import { JsonPipe } from '@angular/common';
 @Component({
   selector: 'products-page',
   standalone: true,
-  imports: [FormsModule, ProductItem, ProductForm],
+  imports: [FormsModule, ProductItem, JsonPipe],
   templateUrl: './products-page.html',
   styleUrl: './products-page.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -25,6 +25,11 @@ export class ProductsPage {
   title = 'Mi lista de productos';
 
   #productsService = inject(ProductsService);
+  #titleService = inject(Title);
+
+  constructor() {
+    this.#titleService.setTitle('Productos | Angular Products');
+  }
 
   // 3. CAMBIO PRINCIPAL: Usamos resource en vez de signal + constructor
   productsResource = resource({

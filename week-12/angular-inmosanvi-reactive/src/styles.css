@@ -1,0 +1,25 @@
+/* You can add global styles to this file, and also import other style files */
+@import 'tailwindcss';
+/* Automatic validation of Angular + Tailwind */
+:is(input, textarea, select) {
+  @apply border rounded-md;
+
+  /* If the field has been touched and is invalid: Red */
+  &.ng-touched.ng-invalid {
+    @apply border-red-700 ring-red-600;
+  }
+
+  /* If the field has been touched and is valid: green */
+  &.ng-touched.ng-valid {
+    @apply border-green-700 ring-green-700;
+  }
+
+  /* Hide error messages if we are not in an error state */
+  &:not(.ng-touched.ng-invalid) ~ .error-msg {
+    @apply hidden;
+  }
+
+  &:focus {
+    @apply ring-1;
+  }
+}
