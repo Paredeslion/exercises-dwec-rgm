@@ -11,52 +11,79 @@ export class PropertiesService {
   #http = inject(HttpClient);
   readonly #baseUrl = 'properties';
 
-  // --- MODIFICACIÓN CLAVE ---
-  // Ahora aceptamos señales opcionales para filtrar
-  // Si no se pasan, devuelve todas (como antes)
-  getPropertiesResource(searchSignal?: Signal<string>, provinceSignal?: Signal<string>) {
-    return httpResource<PropertiesResponse>(() => {
-      // Construimos la URL con parámetros
-      let url = this.#baseUrl;
-      const params: string[] = [];
+  // We store the signals internally to use them in the “emergency filter.”
+  #searchSignal: Signal<string> | undefined;
+  #provinceSignal: Signal<string> | undefined;
 
+  getPropertiesResource(searchSignal?: Signal<string>, provinceSignal?: Signal<string>) {
+    this.#searchSignal = searchSignal;
+    this.#provinceSignal = provinceSignal;
+
+    return httpResource<PropertiesResponse>(() => {
+      // To search without filteredProperties
+      // We read the signals. Angular will re-run the request when they change.
       const search = searchSignal ? searchSignal() : '';
       const province = provinceSignal ? provinceSignal() : '';
 
-      // Dependiendo de tu backend, el parámetro de búsqueda suele ser 'q' o 'search'
-      // Ajusta esto según tu API. Asumo 'q' que es estándar json-server
-      if (search) {
-        params.push(`q=${encodeURIComponent(search)}`);
-      }
+      // We build the URL with parameters (even though the backend ignores them, we send them)
+      let url = this.#baseUrl;
+      const params: string[] = [];
 
-      // La profesora menciona filtrar por provincia.
-      // Si el backend soporta filtro anidado (ej: town.province.name), úsalo.
-      // Si no, tendremos que filtrar la provincia en cliente o usar el parámetro que espere tu API.
-      // Nota: Si el backend NO soporta filtrado, el comentario de la profesora
-      // "filteredProperties te sobra" implica que ELLA ESPERA que el backend lo soporte.
-      // Vamos a asumir que tu backend no filtra complejo y solo mandamos búsqueda global 'q'.
+      if (search) params.push(`q=${encodeURIComponent(search)}`);
+      // We adjust the province filter to the JSON structure
+      if (province) params.push(`town.province.name=${encodeURIComponent(province)}`);
 
-      if (params.length > 0) {
-        url += `?${params.join('&')}`;
-      }
+      if (params.length > 0) url += `?${params.join('&')}`;
 
+      // We make the actual request to the server
       return url;
     });
   }
 
-  // Mantenemos una referencia "por defecto" para cuando no hay filtros (ej: property-form)
+  // We maintain a “default” reference for when there are no filters (e.g., property-form).
   readonly propertiesResource = this.getPropertiesResource();
 
-  // Calculated Signal (Replaces LinkedSignal)
-  // We need to use .reload(). When we reload, the resource updates itself.
-  // We no longer need a manually editable ‘linkedSignal’; a ‘computed’ one is sufficient.
-  readonly properties = computed(() => this.propertiesResource.value()?.properties ?? []);
+  // The MOST important
+  // This computed signal processes the response.
+  // If the server returns EVERYTHING (because it's dumb), we filter it here.
+  readonly properties = computed(() => {
+    // We obtain what the server has returned
+    const rawData: any = this.propertiesResource.value();
+
+    // We normalize the response (in case it is an array or object).
+    let list: Property[] = [];
+    if (Array.isArray(rawData)) {
+      list = rawData;
+    } else {
+      list = rawData?.properties ?? [];
+    }
+
+    // Security filter
+    // We retrieve the current value of the filters
+    const search = this.#searchSignal ? this.#searchSignal()?.toLowerCase() : '';
+    const province = this.#provinceSignal ? this.#provinceSignal() : '';
+
+    // If there are no filters, we return everything
+    if (!search && !province) return list;
+
+    // If there are filters, we apply the logic ourselves (since the backend failed)
+    return list.filter((p) => {
+      const matchesText =
+        !search ||
+        p.title.toLowerCase().includes(search) ||
+        p.address.toLowerCase().includes(search);
+
+      const matchesProvince = !province || p.town?.province?.name === province;
+
+      return matchesText && matchesProvince;
+    });
+  });
 
   // New resource: Gat a property by ID
   // Receives a signal with the ID and returns a reactive resource
   getPropertyResource(idSignal: Signal<number | undefined>) {
     return httpResource<SinglePropertyResponse>(() => {
-      // We read the value
+      // Leemos el valor
       const id = idSignal();
 
       // If it's undefined or NaN, we don't make the petition
@@ -64,7 +91,7 @@ export class PropertiesService {
         return undefined;
       }
 
-      // If we had the ID, we make the petition
+      // Si tenemos ID, hacemos la petición
       return `properties/${id}`;
     });
   }

@@ -40,6 +40,9 @@ export class PropertyForm implements CanComponentDeactivate {
   // Signal for Province (used to load towns)
   provinceId = signal(0);
 
+  // To check if the province field has not been modified
+  provinceTouched = signal(false);
+
   // Resources
   // We obtain the provinces directly from the service.
   provincesResource = this.#provincesService.provincesResource;
@@ -113,7 +116,7 @@ export class PropertyForm implements CanComponentDeactivate {
     });
   }
 
-  // Helper to update the province without ngModel
+  // New helper to update the province without ngModel
   updateProvince(e: Event) {
     const val = (e.target as HTMLSelectElement).value;
     this.provinceId.set(Number(val));

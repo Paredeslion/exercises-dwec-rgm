@@ -40,7 +40,7 @@
         <p class="col-span-full text-center">Loading properties...</p>
       }
 
-      @for (property of propertiesResource.value()?.properties; track property.id) {
+      @for (property of properties(); track property.id) {
         <property-card [property]="property" (deleted)="deleteProperty(property.id)">
         </property-card>
       } @empty {

@@ -1,15 +1,16 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { PropertyCard } from '../property-card/property-card';
 import { PropertiesService } from '../../shared/services/properties';
 import { ProvincesService } from '../../shared/services/provinces';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { JsonPipe } from '@angular/common';
 
 @Component({
   selector: 'properties-page',
   standalone: true,
-  imports: [PropertyCard],
+  imports: [PropertyCard, JsonPipe],
   templateUrl: './properties-page.html',
   styleUrl: './properties-page.css',
 })
@@ -33,23 +34,23 @@ export class PropertiesPage {
     { initialValue: '' },
   );
 
-  // 3. Recurso Reactivo (Petición al servidor)
-  // Le pasamos las señales al servicio. Al cambiar 'searchDebounced', se relanza la petición HTTP.
-  // ¡Esto elimina la necesidad de 'filteredProperties' local!
+  // Reactive Resource (Server Request)
+  // We pass the signals to the service. When ‘searchDebounced’ changes, the HTTP request is re-launched.
+  // This eliminates the need for local ‘filteredProperties’
   propertiesResource = this.#propertiesService.getPropertiesResource(
     this.searchDebounced, // Usamos la versión con retraso
     this.province,
   );
 
-  // Extraemos las propiedades del recurso para pintarlas
-  properties = this.propertiesResource.value; // Es un computed signal interno del recurso
+  // We extract the properties of the resource to paint them.
+  properties = this.#propertiesService.properties; // It is an internal computed signal of the resource.
 
   constructor() {
     // To change the title of the page
     this.#title.setTitle('Properties Page | InmoSanvi');
   }
 
-  // Helpers para el HTML (binding sin ngModel)
+  // Helpers for HTML (binding without ngModel)
   updateSearch(e: Event) {
     this.search.set((e.target as HTMLInputElement).value);
   }
